@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>FEDERAL ARCHIVE RECORD</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Special Elite', monospace;
+    background: #ffffff;
+    background-image: url("https://www.transparenttextures.com/patterns/paper.png");
+}
+
+/* INTRO */
+#intro {
+    position: fixed;
+    inset: 0;
+    background: black;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    animation: glitch 0.15s infinite;
+    z-index: 30;
+}
+
+@keyframes glitch {
+    0% { text-shadow: 2px 0 red; }
+    50% { text-shadow: -2px 0 blue; }
+    100% { text-shadow: 2px 0 red; }
+}
+
+/* PASSWORD TERMINAL */
+#passwordScreen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #111 0%, #000 80%);
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+.access-panel {
+    background: rgba(20,20,20,0.9);
+    border: 2px solid #555;
+    padding: 50px 60px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0,0,0,0.8);
+    width: 420px;
+}
+
+.access-seal {
+    width: 80px;
+    opacity: 0.4;
+    margin-bottom: 20px;
+    filter: grayscale(100%);
+}
+
+.access-title { margin: 0; letter-spacing: 2px; }
+
+.access-sub {
+    font-size: 14px;
+    opacity: 0.7;
+    margin-bottom: 25px;
+}
+
+.access-input {
+    width: 100%;
+    padding: 12px;
+    background: #111;
+    border: 1px solid #666;
+    color: #fff;
+    text-align: center;
+    font-size: 18px;
+    letter-spacing: 3px;
+    outline: none;
+    margin-bottom: 20px;
+    transition: 0.2s;
+}
+
+.access-input:focus {
+    border-color: #00ff88;
+    box-shadow: 0 0 10px rgba(0,255,136,0.5);
+}
+
+.access-button {
+    width: 100%;
+    padding: 12px;
+    background: #222;
+    border: 1px solid #666;
+    color: white;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: 0.2s;
+}
+
+.access-button:hover { background: #333; }
+
+.access-message {
+    margin-top: 15px;
+    font-size: 13px;
+    min-height: 18px;
+}
+
+.shake { animation: shake 0.3s; }
+
+/* MAIN DOCUMENT */
+#main {
+    display: none;
+    padding: 80px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    border: 6px double black;
+    position: relative;
+    transition: opacity 0.25s ease, background 0.2s ease;
+}
+
+.fade-out { opacity: 0; }
+.locked .option { pointer-events: none; opacity: 0.6; }
+
+.flash-green { background: rgba(0,255,0,0.15) !important; }
+.flash-red { background: rgba(255,0,0,0.15) !important; }
+
+.archive-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+}
+
+.ref-left, .ref-right { width: 30%; }
+
+.seal {
+    width: 130px;
+    filter: grayscale(20%) contrast(105%);
+}
+
+.doc-title { text-align: center; }
+.subheading { text-align: center; font-size: 14px; }
+
+.declassified {
+    position: absolute;
+    top: 250px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-15deg);
+    font-size: 70px;
+    color: rgba(255,0,0,0.12);
+    border: 6px solid rgba(255,0,0,0.15);
+    padding: 10px 40px;
+    pointer-events: none;
+}
+
+.option {
+    border: 2px solid black;
+    padding: 20px;
+    margin: 30px 30px 30px 0;
+    display: inline-block;
+    cursor: pointer;
+    background: #f8f8f8;
+    transition: 0.2s;
+}
+/* OPTIONS LAYOUT IMPROVEMENT */
+
+.options-container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 60px;
+    margin-top: 60px;
+}
+
+.option {
+    width: 300px;
+    text-align: center;
+    font-size: 18px;
+    padding: 25px;
+    background: #f8f8f8;
+    border: 2px solid black;
+    transition: 0.2s ease;
+}
+
+.option:hover { background: black; color: white; }
+
+#timer { margin-top: 20px; font-size: 22px; }
+#counter { font-size: 14px; margin-bottom: 10px; opacity: 0.7; }
+
+.glitchScreen { animation: shake 0.3s; }
+
+@keyframes shake {
+    0% { transform: translate(8px); }
+    25% { transform: translate(-8px); }
+    50% { transform: translate(8px); }
+    75% { transform: translate(-8px); }
+    100% { transform: translate(0); }
+}
+
+/* VIGNETTE */
+#vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(0,0,0,0) 55%,
+        rgba(0,0,0,0.15) 100%
+    );
+    z-index: 5;
+}
+
+/* FILM GRAIN */
+#grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 6;
+    opacity: 0.08;
+    background-image: url("https://www.transparenttextures.com/patterns/asfalt-light.png");
+    animation: grainShift 8s steps(10) infinite;
+}
+
+@keyframes grainShift {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-2%, 1%); }
+    50% { transform: translate(1%, -1%); }
+    75% { transform: translate(-1%, 2%); }
+    100% { transform: translate(0, 0); }
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro">ACCESSING FEDERAL ARCHIVE DATABASE...</div>
+
+<div id="passwordScreen">
+    <div class="access-panel">
+        <img src="./fbi-seal.png" class="access-seal">
+
+
+
+        <h2 class="access-title">SECURE ARCHIVE TERMINAL</h2>
+        <p class="access-sub">Enter Authorized Access Code</p>
+        <input type="password" id="pass" class="access-input" placeholder="••••••">
+        <button class="access-button" onclick="checkPass()">AUTHENTICATE</button>
+        <p id="accessMessage" class="access-message"></p>
+    </div>
+</div>
+
+<div id="main">
+    <div class="archive-header">
+        <div class="ref-left">
+            <p>FILE REF: XJ-17-042</p>
+            <p>ARCHIVE UNIT: Behavioral Analysis</p>
+        </div>
+        <img src="./fbi-seal.png" class="seal">
+
+        <div class="ref-right">
+            <p>DOC ID: 0417-A</p>
+            <p>DATE FILED: 02/14/2026</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <h1 class="doc-title">FEDERAL BUREAU OF INVESTIGATION</h1>
+    <p class="subheading">UNITED STATES DEPARTMENT OF JUSTICE</p>
+
+    <div class="declassified">DECLASSIFIED</div>
+
+    <hr>
+
+    <div id="counter"></div>
+    <h2 id="question"></h2>
+
+    <div class="options-container">
+        <div class="option" onclick="choose(0)" id="opt1"></div>
+        <div class="option" onclick="choose(1)" id="opt2"></div>
+    </div>
+
+    <div id="timer"></div>
+</div>
+
+<div id="vignette"></div>
+<div id="grain"></div>
+
+<script>
+
+/* SOUND */
+const clickSound = new Audio("sounds/click.wav");
+const tick = new Audio("sounds/tick.wav");
+const heartbeat = new Audio("sounds/heartbeat.wav");
+const glitchSound = new Audio("sounds/glitch.wav");
+const accessSound = new Audio("sounds/access.wav");
+const deniedSound = new Audio("sounds/denied.wav");
+const timeoutSound = new Audio("sounds/timeout.wav");
+
+heartbeat.loop = true;
+tick.loop = true;
+
+/* 30 QUESTION POOL */
+const questionPool = [
+{ q: "Does the suspect prefer cars or bikes?", o: ["Cars", "Bikes"], a: 0 },
+{ q: "Does the suspect prefer chocolate or coffee?", o: ["Chocolate", "Coffee"], a: 0 },
+{ q: "Does the suspect prefer summer or winter?", o: ["Summer", "Winter"], a: 1 },
+{ q: "Does the suspect prefer movies or series?", o: ["Movies", "Series"], a: 0 },
+{ q: "Does the suspect prefer city life or countryside?", o: ["City", "Countryside"], a: 1 },
+{ q: "Does the suspect prefer all clothes off or clothes falling off but on", o: ["All off", "Falling off"], a: 1 },
+{ q: "Does the suspect prefer dogs or cats?", o: ["Dogs", "Cats"], a: 1 },
+{ q: "Does the suspect prefer a pic of you fingering yourself right now", o: ["no.", "YES(requires you sending one)"], a: 1 },
+{ q: "Does the suspect prefer sunrise or sunset?", o: ["Sunrise", "Sunset"], a: 1 },
+{ q: "Does the suspect prefer beach or mountains?", o: ["Beach", "Mountains"], a: 1 },
+{ q: "Does the suspect prefer Surprise 'special' pictures or flirting", o: ["Pics", "Flirting"], a: 0 },
+{ q: "Does the suspect prefer tea or coffee?", o: ["Tea", "Coffee"], a: 1 },
+{ q: "Does the suspect prefer Risky intimacy or secure", o: ["Risky", "Secure"], a: 0 },
+{ q: "Does the suspect prefer F-16 OR F-22", o: ["F-22", "F-16"], a: 0 },
+{ q: "Does the suspect prefer night or day?", o: ["Night", "Day"], a: 0 },
+{ q: "Does the suspect prefer hoodie or jacket?", o: ["Hoodie", "Jacket"], a: 0 },
+{ q: "Does the suspect prefer sneakers or boots?", o: ["Sneakers", "Boots"], a: 1 },
+{ q: "Does the suspect prefer gold or silver?", o: ["Gold", "Silver"], a: 1 },
+{ q: "Does the suspect prefer rain or spring?", o: ["Rain", "Spring"], a: 0 },
+{ q: "Does the suspect prefer Missionary or Backshots", o: ["Missionary", "Backshots"], a: 0 },
+{ q: "Does the suspect prefer top or bottom during sexual intimacy?", o: ["Top", "Bottom"], a: 0 },
+{ q: "Does the suspect prefer horror or romance?", o: ["Horror", "Romance"], a: 0 },
+{ q: "Does the suspect prefer adventure or comfort?", o: ["Adventure", "Comfort"], a: 0 },
+{ q: "Does the suspect prefer Vodka or Beer", o: ["Vodka", "Beer"], a: 0 },
+{ q: "Does the suspect prefer phone or laptop?", o: ["Phone", "Laptop"], a: 1 },
+{ q: "Does the suspect prefer Instagram or YouTube?", o: ["Instagram", "YouTube"], a: 1 },
+{ q: "Does the suspect prefer staying in or going out?", o: ["Staying in", "Going out"], a: 0 },
+{ q: "Does the suspect prefer hugs or kissing?", o: ["Hugs", "Kissing"], a: 1 },
+{ q: "Does the suspect prefer chaos or calm?", o: ["Chaos", "Calm"], a: 0 },
+{ q: "Does the suspect prefer you moaning or music", o: ["Moaning", "Music"], a: 0 }
+];
+
+/* Shuffle + Select 12 */
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+let questions = shuffleArray([...questionPool]).slice(0, 12);
+
+let current = 0;
+let score = 0;
+let countdown;
+let timeLeft = 15;
+let locked = false;
+
+const main = document.getElementById("main");
+
+/* REST OF YOUR ORIGINAL GAME LOGIC REMAINS EXACTLY THE SAME BELOW */
+
+function lockInput() { locked = true; main.classList.add("locked"); }
+function unlockInput() { locked = false; main.classList.remove("locked"); }
+
+function fadeTransition(callback) {
+    main.classList.add("fade-out");
+    setTimeout(() => {
+        main.classList.remove("fade-out");
+        callback();
+    }, 250);
+}
+
+function loadQ() {
+    if (current >= questions.length) return showFinal();
+    unlockInput();
+    clearInterval(countdown);
+    heartbeat.pause();
+    tick.pause();
+    timeLeft = 15;
+
+    document.getElementById("counter").innerText =
+        `Question ${current + 1} of ${questions.length}`;
+
+    document.getElementById("question").innerText =
+        questions[current].q;
+
+    document.getElementById("opt1").innerText =
+        questions[current].o[0];
+
+    document.getElementById("opt2").innerText =
+        questions[current].o[1];
+
+    document.getElementById("timer").innerText =
+        "Time Remaining: " + timeLeft;
+
+    tick.play();
+
+    countdown = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText =
+            "Time Remaining: " + timeLeft;
+
+        if (timeLeft === 5) {
+            heartbeat.play();
+            document.getElementById("vignette").style.background =
+                "radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(0,0,0,0.25) 100%)";
+            document.getElementById("grain").style.opacity = "0.15";
+        }
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            heartbeat.pause();
+            tick.pause();
+            timeoutSound.play();
+            lockInput();
+            setTimeout(() => fadeTransition(nextQ), 600);
+        }
+
+    }, 1000);
+
+    document.getElementById("vignette").style.background =
+        "radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.15) 100%)";
+    document.getElementById("grain").style.opacity = "0.08";
+}
+
+function choose(sel) {
+    if (locked) return;
+    lockInput();
+    clearInterval(countdown);
+    heartbeat.pause();
+    tick.pause();
+    clickSound.play();
+
+    if (sel === questions[current].a) {
+        score++;
+        accessSound.play();
+        setTimeout(() => accessSound.play(), 200);
+        main.classList.add("flash-green");
+    } else {
+        glitchSound.play();
+        main.classList.add("flash-red");
+        main.classList.add("glitchScreen");
+    }
+
+    setTimeout(() => {
+        main.classList.remove("flash-green");
+        main.classList.remove("flash-red");
+        main.classList.remove("glitchScreen");
+        fadeTransition(nextQ);
+    }, 700);
+}
+
+function nextQ() { current++; loadQ(); }
+
+function showFinal() {
+    clearInterval(countdown);
+    heartbeat.pause();
+    tick.pause();
+    lockInput();
+
+    main.innerHTML = `
+        <div style="text-align:center; padding-top:120px;">
+            <h1>FINAL EVALUATION REPORT</h1>
+            <hr style="margin:40px 0;">
+            <h2 style="font-size:60px;">${score} / ${questions.length}</h2>
+            <hr style="margin:40px 0;">
+            <p style="font-size:22px; color:${score >= 10 ? "green" : "red"};">
+                ${score >= 10
+                    ? "SUBJECT APPROVED FOR LIFETIME PARTNERSHIP."
+                    : "EVALUATION FAILED. RETRAINING REQUIRED."}
+            </p>
+        </div>
+    `;
+}
+
+function checkPass() {
+    const correct = "021426";
+    const entered = document.getElementById("pass").value;
+    const message = document.getElementById("accessMessage");
+    const panel = document.querySelector(".access-panel");
+
+    if (entered === correct) {
+        accessSound.play();
+        message.style.color = "#00ff88";
+        message.innerText = "ACCESS GRANTED";
+        setTimeout(() => {
+            document.getElementById("passwordScreen").style.display = "none";
+            document.getElementById("main").style.display = "block";
+            loadQ();
+        }, 1000);
+    } else {
+        deniedSound.play();
+        message.style.color = "red";
+        message.innerText = "ACCESS DENIED";
+        panel.classList.add("shake");
+        setTimeout(() => panel.classList.remove("shake"), 300);
+    }
+}
+
+setTimeout(() => {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("passwordScreen").style.display = "flex";
+}, 2500);
+
+</script>
+
+</body>
+</html>
